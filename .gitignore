@@ -3,3 +3,7 @@
 
 # Secrets
 creds/
+config.json
+
+# Data folder
+export/
