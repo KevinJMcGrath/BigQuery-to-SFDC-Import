@@ -50,20 +50,21 @@ class BQClient:
 
             # restval specifies what value to write if the row being written doesn't have a key for a given fieldname
             # extrasaction specifies what to do if the row being written has keys not found in fieldnames
-            # linedelimiter tells the writer to only use newline characters after each line; otherwise, it inserts
+            # lineterminator tells the writer to only use newline characters after each line; otherwise, it inserts
             #   extra lines between each data row.
             csv_writer = csv.DictWriter(export_file, fieldnames=field_names, restval='', extrasaction='ignore',
-                                        linedelimiter='\n')
+                                        lineterminator='\n')
             csv_writer.writeheader()
 
             index = 0
             for row in self.results:
                 index += 1
                 csv_writer.writerow(dict(row.items()))
-                print(f'Lines written: {index}', end='\r')
+                # This didn't work
+                # print(f'\rLines written: {index}')
 
         print('done!')
 
     @time_query
     def __execute_query(self):
-        self.results = self.query_client.query(self.last_query)
+        self.results = self.query_client.query(self.last_query).result()
