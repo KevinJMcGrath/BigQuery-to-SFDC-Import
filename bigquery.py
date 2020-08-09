@@ -42,8 +42,6 @@ class BQClient:
         print('Exporting results to CSV...')
 
         with open(export_path, 'w') as export_file:
-            #field_names = [s.name for s in self.results._query_results.schema]
-
             field_names = ['username', 'last_login_timestamp', 'documents_read_count', 'watchlists_created_count',
                            'watchlists_deleted_count', 'watchlists_modified_count', 'net_watchlists_created',
                            'alert_creation_count', 'alert_deletion_count', 'net_alert_creation_count']

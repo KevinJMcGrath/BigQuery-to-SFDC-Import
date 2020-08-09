@@ -1,10 +1,13 @@
 import jsonpickle
 
-import models
+import models.config
 
 
 with open('./config.json', 'r') as config_file:
     _config = jsonpickle.decode(config_file.read())
 
-Google = models.GoogleSettings(_config['google'])
-Salesforce = models.SalesforceSettings(_config['salesforce'])
+Google = models.config.GoogleSettings(_config['google'])
+Salesforce = models.config.SalesforceSettings(_config['salesforce'])
+
+for pb_item in _config['salesforce']['pb_collection']:
+    Salesforce.process_collection[pb_item['name']] = pb_item['version']

@@ -13,3 +13,4 @@ class SalesforceSettings:
         self.username = sfdc_json['username']
         self.password = sfdc_json['password']
         self.security_token = sfdc_json['security_token']
+        self.process_collection = {}
