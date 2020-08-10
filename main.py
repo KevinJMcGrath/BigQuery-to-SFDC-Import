@@ -1,4 +1,5 @@
 import jsonpickle
+import logging
 import pprint
 import time
 
@@ -6,7 +7,7 @@ from bigquery import BQClient
 from sfdc import payload
 from sfdc.client import SFClient
 
-import utility
+# import utility
 
 def test_bq():
     bq_client = BQClient.from_config()
@@ -36,7 +37,7 @@ def run_main():
     contact_list = sfdc_client.get_contacts_by_username()
 
 
-    print('Matching Salesforce Contacts to BigQuery results...')
+    logging.info('Matching Salesforce Contacts to BigQuery results...')
     # utility.print_progress_bar(0, bq_total, prefix='Progress:', suffix='Complete', length=50)
 
     contacts_for_update = []
@@ -52,20 +53,20 @@ def run_main():
         # utility.print_progress_bar(index, bq_total, prefix='Progress:', suffix='Complete', length=50)
         index += 1
 
-    print(f'Matched {len(contacts_for_update)} Contacts. Updating...', end='')
+    logging.info(f'Matched {len(contacts_for_update)} Contacts. Updating...', end='')
 
     # Disable Process Builder processes
     sfdc_client.deactivate_pb_processes()
 
-    sfdc_client.update_bulk(contacts_for_update)
+    bulk_job_id = sfdc_client.update_bulk(contacts_for_update)
 
     # If the bulk job isn't complete, wait 5 seconds then check again
-    while not sfdc_client.check_bulk_job_complete():
+    while not sfdc_client.check_bulk_job_complete(bulk_job_id):
         time.sleep(5)
 
     sfdc_client.activate_pb_processes()
 
-    print('done!')
+    logging.info('done!')
 
 
 if __name__ == '__main__':

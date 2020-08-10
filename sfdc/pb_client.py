@@ -1,4 +1,5 @@
 import jsonpickle
+import logging
 import urllib.parse
 
 import config
@@ -32,7 +33,10 @@ class ProcessBuilderManager:
             # The response coming from Salesforce is apparently malformed and fails to parse properly
             response = self.client.restful(path=f'tooling/sobjects/FlowDefinition/{process_id}/', method='PATCH', data=pb_str)
         except Exception as ex:
-            print(ex)
+            # The tooling API always returns an error for this for some reason. Ignore it
+            if 'Expecting value' not in ex:
+                logging.error(ex)
+
 
     def toggle_processes(self, activate: bool=False):
         pb_map = self.get_all_pb_processes()
@@ -47,10 +51,5 @@ class ProcessBuilderManager:
                 if activate:
                     active_version = config.Salesforce.process_collection[pb_name]
 
-                print(f'{"Activating" if activate else "Deactivating"} process {pb_name}')
+                logging.info(f'{"Activating" if activate else "Deactivating"} process {pb_name}')
                 self.submit_toggle_pb_process(pb_id, active_version)
-
-
-
-    def check_bulk_job_complete(self):
-        pass

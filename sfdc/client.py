@@ -1,3 +1,5 @@
+import logging
+
 from simple_salesforce import Salesforce
 
 import config
@@ -19,9 +21,8 @@ class SFClient:
     def get_contacts_by_username(self):
         soql = 'SELECT Id, Username__c, Apex_Bypass_Toggle__c FROM Contact ORDER BY Username__c ASC'
 
-        print('Downloading Contacts from Salesforce...', end='')
+        logging.info('Downloading Contacts from Salesforce...')
         response = self.client.query_all(soql)
-        print('done!')
 
         return {u['Username__c']: u for u in response['records']}
 
@@ -35,11 +36,11 @@ class SFClient:
             if end >= len(contacts_for_update):
                 end = len(contacts_for_update) - 1
 
-            print(f'Sending Contact update rows {start} to {end}')
+            logging.info(f'Sending Contact update rows {start} to {end}')
             self.client.update_contacts(contacts_for_update[start:end])
 
     def update_bulk(self, contacts_for_update: list):
-        self.bulk_client.send_bulk_update(contacts_for_update)
+        return self.bulk_client.send_bulk_update(contacts_for_update)
 
     def activate_pb_processes(self):
         self.pb_client.toggle_processes(True)
@@ -47,5 +48,5 @@ class SFClient:
     def deactivate_pb_processes(self):
         self.pb_client.toggle_processes(False)
 
-    def check_bulk_job_complete(self):
-        return  self.pb_client.check_bulk_job_complete()
+    def check_bulk_job_complete(self, job_id: str):
+        return  self.bulk_client.check_bulk_job_complete(job_id)

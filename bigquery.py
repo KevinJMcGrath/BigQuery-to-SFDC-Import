@@ -1,4 +1,5 @@
 import csv
+import logging
 
 from datetime import datetime
 from google.cloud import bigquery
@@ -32,14 +33,14 @@ class BQClient:
         if query_str:
             self.last_query = query_str
 
-            print('Executing query...')
+            logging.info('Executing query...')
             self.__execute_query()
 
     def export_csv(self):
         filename = f'bq_export_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}.csv'
         export_path = Path('./export', filename)
 
-        print('Exporting results to CSV...')
+        logging.info('Exporting results to CSV...')
 
         with open(export_path, 'w') as export_file:
             field_names = ['username', 'last_login_timestamp', 'documents_read_count', 'watchlists_created_count',
