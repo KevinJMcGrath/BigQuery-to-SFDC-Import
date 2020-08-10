@@ -1,7 +1,8 @@
 # Heroku Dockerfile Sample
 # https://github.com/heroku/alpinehelloworld
 
-FROM alpine:latest
+# FROM alpine:latest
+FROM python:3.8-slim-buster
 
 RUN apk add --no-cache --update python3 py3-pip bash
 ADD ./requirements.txt /tmp/requirements.txt
