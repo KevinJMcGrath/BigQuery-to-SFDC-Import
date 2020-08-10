@@ -3,6 +3,8 @@ import logging
 import pprint
 import time
 
+from apscheduler.schedulers.blocking import BlockingScheduler
+
 from bigquery import BQClient
 from sfdc import payload
 from sfdc.client import SFClient
@@ -69,7 +71,18 @@ def run_main():
     logging.info('done!')
 
 
+def run_sched():
+    scheduler = BlockingScheduler()
+    scheduler.add_job(run_main, 'cron', hour=1)
+
+    try:
+        scheduler.start()
+    except (KeyboardInterrupt, SystemExit) as ex:
+        logging.info(f'Exiting process...{ex}')
+
+
 if __name__ == '__main__':
-    run_main()
+    run_sched()
+    # run_main()
     # test_bq()
 
