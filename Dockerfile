@@ -15,4 +15,4 @@ WORKDIR /opt/bqimport
 RUN adduser --disabled-password kevin_as
 USER kevin_as
 
-CMD python3 main.py
+CMD python3 main.py -j

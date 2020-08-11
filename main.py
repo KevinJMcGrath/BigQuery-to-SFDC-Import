@@ -33,12 +33,6 @@ def test_bq():
         pp.pprint(output_json)
 
 def run_main():
-    logging.debug('Test Debug (verbose)')
-    logging.info('Test Info (verbose)')
-    logging.warning('Test Warn (verbose)')
-    logging.error('Test Error (verbose)')
-
-
     bq_client = BQClient.from_config()
     sfdc_client = SFClient.from_config()
 
@@ -67,7 +61,7 @@ def run_main():
         # utility.print_progress_bar(index, bq_total, prefix='Progress:', suffix='Complete', length=50)
         index += 1
 
-    logging.info(f'Matched {len(contacts_for_update)} Contacts. Updating...', end='')
+    logging.info(f'Matched {len(contacts_for_update)} Contacts. Updating...')
 
     # Disable Process Builder processes
     sfdc_client.deactivate_pb_processes()

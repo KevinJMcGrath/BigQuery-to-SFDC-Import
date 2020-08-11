@@ -77,7 +77,7 @@ class SFBulkCustomClient:
 
         is_complete = True
         for batch in resp['batchInfo']:
-            logging.info(f"batch id: {batch['id']} - state: {batch['state']} - "
+            logging.debug(f"batch id: {batch['id']} - state: {batch['state']} - "
                          f"records processed: {batch['numberRecordsProcessed']} - "
                          f"records failed: {batch['numberRecordsFailed']}")
             is_complete = is_complete and batch['state'] == 'Completed'

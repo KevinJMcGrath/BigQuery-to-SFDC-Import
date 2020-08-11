@@ -34,7 +34,7 @@ class ProcessBuilderManager:
             response = self.client.restful(path=f'tooling/sobjects/FlowDefinition/{process_id}/', method='PATCH', data=pb_str)
         except Exception as ex:
             # The tooling API always returns an error for this for some reason. Ignore it
-            if 'Expecting value' not in ex:
+            if 'Expecting value' not in str(ex):
                 logging.error(ex)
 
 
