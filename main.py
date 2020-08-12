@@ -10,8 +10,6 @@ from bigquery import BQClient
 from sfdc import payload
 from sfdc.client import SFClient
 
-# import utility
-
 package_logger.initialize_logging()
 
 def run_main():
@@ -28,7 +26,6 @@ def run_main():
 
 
     logging.info('Matching Salesforce Contacts to BigQuery results...')
-    # utility.print_progress_bar(0, bq_total, prefix='Progress:', suffix='Complete', length=50)
 
     contacts_for_update = []
     index = 0
@@ -40,7 +37,6 @@ def run_main():
             bypass_toggle = contact_list[username]['Apex_Bypass_Toggle__c']
             contacts_for_update.append(payload.build_payload(sfdc_id, bypass_toggle, row))
 
-        # utility.print_progress_bar(index, bq_total, prefix='Progress:', suffix='Complete', length=50)
         index += 1
 
     logging.info(f'Matched {len(contacts_for_update)} Contacts. Updating...')
