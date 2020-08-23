@@ -80,5 +80,5 @@ class ProcessBuilderManager:
                 if activate:
                     active_version = working_dict[pb_name]
 
-                print(f'{"Activating" if activate else "Deactivating"} process {pb_name}')
+                logging.info(f'{"Activating" if activate else "Deactivating"} process {pb_name}')
                 self.submit_toggle_pb_process(pb_id, active_version)

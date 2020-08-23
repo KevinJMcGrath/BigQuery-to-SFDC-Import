@@ -1,6 +1,12 @@
+import jsonpickle
 import time
+import re
 
+from datetime import datetime
 from functools import  wraps
+from pathlib import Path
+
+
 
 def time_query(my_func):
     @wraps(my_func)
@@ -36,3 +42,30 @@ def print_progress_bar (iteration, total, prefix = '', suffix = '', decimals = 1
     # Print New Line on Complete
     if iteration == total:
         print()
+
+def export_json(obj_for_export):
+    filename = re.sub('[-:.]', '_', datetime.now().isoformat())
+    export_path = Path(f"./export/{filename}.json")
+
+    with open(export_path, 'w') as output_file:
+        output_json = jsonpickle.encode(obj_for_export, unpicklable=False)
+
+        output_file.write(output_json)
+
+    print('Export complete!')
+
+def get_job_parameters(obj_list: list):
+    sfdc_bulk_char_limit = 10_000_000
+    single_record = jsonpickle.encode(obj_list[0], unpicklable=False)
+
+    single_record_size = len(single_record)
+
+    records_per_job, _ = divmod(sfdc_bulk_char_limit, single_record_size)
+    records_per_job -= 200
+
+    groups_per_job, rem = divmod(len(obj_list), records_per_job)
+
+    if rem > 0:
+        groups_per_job += 1
+
+    return records_per_job, groups_per_job

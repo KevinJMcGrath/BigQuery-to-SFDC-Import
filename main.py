@@ -1,10 +1,12 @@
 import logging
 import time
+import sys
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from optparse import OptionParser
 
 import package_logger
+import utility
 
 from bigquery import BQClient
 from sfdc import payload
@@ -34,17 +36,15 @@ def update_opps():
     # Disable Process Builder processes
     sfdc_client.deactivate_pb_processes(object_name='Opportunity')
 
-    bulk_job_id = sfdc_client.update_bulk(opps_for_update, object_name='Opportunity')
+    sfdc_client.update_bulk(opps_for_update, object_name='Opportunity')
 
-    # If the bulk job isn't complete, wait 5 seconds then check again
-    while not sfdc_client.check_bulk_job_complete(bulk_job_id):
-        time.sleep(5)
+    sfdc_client.monitor_job_queue()
 
     sfdc_client.activate_pb_processes(object_name='Opportunity')
 
     logging.info('done!')
 
-def update_contacts():
+def update_contacts(export_results: bool=False, record_count_limit: int=0):
 
     # Obtain data from BigQuery
     query_str = f"SELECT * FROM {bq_client.dataset_id}.{bq_client.tables['contact_table_id']} ORDER BY username"
@@ -66,20 +66,27 @@ def update_contacts():
             bypass_toggle = contact_list[username]['Apex_Bypass_Toggle__c']
             contacts_for_update.append(payload.build_contact_payload(sfdc_id, bypass_toggle, row))
 
+
+        if 0 < record_count_limit <= index:
+            break
+
         index += 1
 
-    logging.info(f'Matched {len(contacts_for_update)} Contacts. Updating...')
+    dict_size = sys.getsizeof(contacts_for_update)
 
-    # Disable Process Builder processes
-    sfdc_client.deactivate_pb_processes(object_name='Contact')
+    logging.info(f'Matched {len(contacts_for_update)} Contacts  ({dict_size:,} bytes). Updating...')
 
-    bulk_job_id = sfdc_client.update_bulk(contacts_for_update, object_name='Contact')
+    if export_results:
+        utility.export_json(contacts_for_update)
+    else:
+        # Disable Process Builder processes
+        sfdc_client.deactivate_pb_processes(object_name='Contact')
 
-    # If the bulk job isn't complete, wait 5 seconds then check again
-    while not sfdc_client.check_bulk_job_complete(bulk_job_id):
-        time.sleep(5)
+        sfdc_client.update_bulk(contacts_for_update, object_name='Contact')
 
-    sfdc_client.activate_pb_processes(object_name='Contact')
+        sfdc_client.monitor_job_queue()
+
+        sfdc_client.activate_pb_processes(object_name='Contact')
 
     logging.info('done!')
 

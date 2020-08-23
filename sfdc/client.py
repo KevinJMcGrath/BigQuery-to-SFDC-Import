@@ -48,13 +48,13 @@ class SFClient:
             self.client.update_contacts(contacts_for_update[start:end])
 
     def update_bulk(self, contacts_for_update: list, object_name):
-        return self.bulk_client.send_bulk_update(contacts_for_update, sobject=object_name)
+        self.bulk_client.submit_records(contacts_for_update, sobject=object_name)
+
+    def monitor_job_queue(self):
+        self.bulk_client.monitor_job_queue()
 
     def activate_pb_processes(self, object_name: str='Contact'):
         self.pb_client.toggle_processes(activate=True, sobject=object_name)
 
     def deactivate_pb_processes(self, object_name: str='Contact'):
         self.pb_client.toggle_processes(activate=False, sobject=object_name)
-
-    def check_bulk_job_complete(self, job_id: str):
-        return  self.bulk_client.check_bulk_job_complete(job_id)

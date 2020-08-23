@@ -7,8 +7,6 @@ from pathlib import Path
 
 import config
 
-from utility import time_query
-
 class BQClient:
     def __init__(self, cred_path: str, project_id: str, dataset_id: str, tables: dict):
         self.cred_path = cred_path
@@ -64,6 +62,5 @@ class BQClient:
 
         print('done!')
 
-    @time_query
     def __execute_query(self):
         self.results = self.query_client.query(self.last_query).result()
