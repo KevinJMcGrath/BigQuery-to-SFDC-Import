@@ -10,11 +10,11 @@ import config
 from utility import time_query
 
 class BQClient:
-    def __init__(self, cred_path: str, project_id: str, dataset_id: str, table_id: str):
+    def __init__(self, cred_path: str, project_id: str, dataset_id: str, tables: dict):
         self.cred_path = cred_path
         self.project_id = project_id
         self.dataset_id = dataset_id
-        self.table_id = table_id
+        self.tables = tables
         self.query_client = bigquery.Client.from_service_account_json(self.cred_path)
         self.last_query = ''
         self.results = None
@@ -24,7 +24,7 @@ class BQClient:
         return BQClient(config.Google.credentials,
                         config.Google.project_id,
                         config.Google.dataset_id,
-                        config.Google.table_id)
+                        config.Google.tables)
 
     def query(self, query_str: str=None):
         if not query_str:

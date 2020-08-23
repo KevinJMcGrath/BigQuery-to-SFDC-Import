@@ -5,7 +5,7 @@ class GoogleSettings:
         self.credentials = Path(google_json['sa_creds_path'])
         self.project_id = google_json['project_id']
         self.dataset_id = google_json['dataset_id']
-        self.table_id = google_json['table_id']
+        self.tables = google_json['tables']
 
 
 class SalesforceSettings:

@@ -1,5 +1,6 @@
 import logging
 
+from datetime import datetime
 from simple_salesforce import Salesforce
 
 import config
@@ -17,6 +18,13 @@ class SFClient:
     @staticmethod
     def from_config():
         return SFClient(config.Salesforce.username, config.Salesforce.password, config.Salesforce.security_token)
+
+    def get_open_opps(self):
+        soql = f'SELECT Id FROM Opportunity WHERE IsClosed = False AND >= {datetime.today().year}-01-01'
+        logging.info('Downloading Opportunities...')
+        response = self.client.query_all(soql)
+
+        return [o['id'] for o in response['records']]
 
     def get_contacts_by_username(self):
         soql = 'SELECT Id, Username__c, Apex_Bypass_Toggle__c FROM Contact ORDER BY Username__c ASC'
@@ -42,11 +50,11 @@ class SFClient:
     def update_bulk(self, contacts_for_update: list):
         return self.bulk_client.send_bulk_update(contacts_for_update)
 
-    def activate_pb_processes(self):
-        self.pb_client.toggle_processes(True)
+    def activate_pb_processes(self, object_name: str='Contact'):
+        self.pb_client.toggle_processes(activate=True, sobject=object_name)
 
-    def deactivate_pb_processes(self):
-        self.pb_client.toggle_processes(False)
+    def deactivate_pb_processes(self, object_name: str='Contact'):
+        self.pb_client.toggle_processes(activate=False, sobject=object_name)
 
     def check_bulk_job_complete(self, job_id: str):
         return  self.bulk_client.check_bulk_job_complete(job_id)

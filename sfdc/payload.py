@@ -1,6 +1,22 @@
 from datetime import datetime
 
-def build_payload(contact_id: str, bypass_toggle: bool, bq_row):
+def build_opp_payload(bq_row):
+    opp_dict = {
+        "Id": bq_row['opp_id'],
+        "Health_Score_L3_Days_Logins__c": bq_row['sessions_health_score'],
+        "Health_Score_Opp_Type__c": bq_row['opp_type_health_score'],
+        "Health_Score_Overall__c": bq_row['opportunity_health_score'],
+        "Health_Score_Percentage_Active_Trialers__c": bq_row['ttl_active_trialers_3d_perc'],
+        "Health_Score_Percentage_of_Watchlists__c": bq_row['roll_dist_trialers_watchlists_created_buckets'],
+        "Health_Score_Predicted_Stage__c": str(bq_row['predicted_stage_bucket']).title(),
+        "Health_Score_Probability_to_Win__c": bq_row['prob'] * 10,
+        "Health_Score_Sector__c": bq_row['sector_health_score'],
+        "Health_Score_Watchlists__c": bq_row['watchlists_health_score']
+    }
+
+    return opp_dict
+
+def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
     def parse_datetime(row_dt):
         if row_dt:
             return row_dt.strftime("%Y-%m-%d")
