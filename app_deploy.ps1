@@ -9,6 +9,9 @@ heroku create
 # change stack to container for docker deploy
 heroku stack:set container
 
+# Execute the following for re-deploy:
+# Make sure Docker is running locally
+
 # log in to container registry
 heroku container:login
 
