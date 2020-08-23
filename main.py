@@ -34,7 +34,7 @@ def update_opps():
     # Disable Process Builder processes
     sfdc_client.deactivate_pb_processes(object_name='Opportunity')
 
-    bulk_job_id = sfdc_client.update_bulk(opps_for_update)
+    bulk_job_id = sfdc_client.update_bulk(opps_for_update, object_name='Opportunity')
 
     # If the bulk job isn't complete, wait 5 seconds then check again
     while not sfdc_client.check_bulk_job_complete(bulk_job_id):
@@ -73,7 +73,7 @@ def update_contacts():
     # Disable Process Builder processes
     sfdc_client.deactivate_pb_processes(object_name='Contact')
 
-    bulk_job_id = sfdc_client.update_bulk(contacts_for_update)
+    bulk_job_id = sfdc_client.update_bulk(contacts_for_update, object_name='Contact')
 
     # If the bulk job isn't complete, wait 5 seconds then check again
     while not sfdc_client.check_bulk_job_complete(bulk_job_id):
@@ -95,9 +95,6 @@ def run_sched():
 
 
 if __name__ == '__main__':
-    update_opps()
-
-
     parser = OptionParser()
     parser.add_option("-j", "--headless", help="Run system on an unattended schedule", dest="headless_flag",
                       default=None, action="store_true")
@@ -108,5 +105,3 @@ if __name__ == '__main__':
         run_sched()
     else:
         run_main()
-
-

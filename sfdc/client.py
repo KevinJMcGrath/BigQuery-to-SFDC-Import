@@ -47,8 +47,8 @@ class SFClient:
             logging.info(f'Sending Contact update rows {start} to {end}')
             self.client.update_contacts(contacts_for_update[start:end])
 
-    def update_bulk(self, contacts_for_update: list):
-        return self.bulk_client.send_bulk_update(contacts_for_update)
+    def update_bulk(self, contacts_for_update: list, object_name):
+        return self.bulk_client.send_bulk_update(contacts_for_update, sobject=object_name)
 
     def activate_pb_processes(self, object_name: str='Contact'):
         self.pb_client.toggle_processes(activate=True, sobject=object_name)

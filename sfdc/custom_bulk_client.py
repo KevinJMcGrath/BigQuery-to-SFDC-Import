@@ -48,22 +48,22 @@ class SFBulkCustomClient:
 
         response = self.submit(url, jsonpickle.encode(payload))
 
-    def send_bulk_update(self, contacts_for_update: list):
+    def send_bulk_update(self, records_for_update: list, sobject: str='Contact'):
         # create the batch job
-        job_id = self.create_job_json('update', 'Contact')
+        job_id = self.create_job_json('update', sobject=sobject)
 
         # add batches to the job
-        group_count, remainder = divmod(len(contacts_for_update), self.batch_record_limit)
+        group_count, remainder = divmod(len(records_for_update), self.batch_record_limit)
 
         for i in range(0, group_count + 1):
             start = self.batch_record_limit * i
             end = self.batch_record_limit * (i + 1) - 1
 
-            if end >= len(contacts_for_update):
-                end = len(contacts_for_update) - 1
+            if end >= len(records_for_update):
+                end = len(records_for_update) - 1
 
             logging.info(f'Sending Contact batch {i + 1} - updating rows {start} to {end}')
-            self.add_batch_json(job_id, contacts_for_update[start:end])
+            self.add_batch_json(job_id, records_for_update[start:end])
 
         logging.info('Closing batch job...')
         self.close_job_json(job_id)
@@ -77,6 +77,10 @@ class SFBulkCustomClient:
 
         is_complete = True
         for batch in resp['batchInfo']:
+            if 'Fail' in batch['state']:
+                print('Failure detected. Check logs...')
+                return True
+
             logging.debug(f"batch id: {batch['id']} - state: {batch['state']} - "
                          f"records processed: {batch['numberRecordsProcessed']} - "
                          f"records failed: {batch['numberRecordsFailed']}")
