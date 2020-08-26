@@ -106,9 +106,19 @@ if __name__ == '__main__':
     parser.add_option("-j", "--headless", help="Run system on an unattended schedule", dest="headless_flag",
                       default=None, action="store_true")
 
+    parser.add_option("-O", "--opps", help="Manually execute import for Opportunity data.", dest="opps_flag",
+                      default=None, action="store_true")
+
+    parser.add_option("-C", "--contacts", help="Manually execute import for Contact data.", dest="cnts_flag",
+                      default=None, action="store_true")
+
     options, args = parser.parse_args()
 
     if options.headless_flag:
         run_sched()
+    elif options.opps_flag:
+        update_opps()
+    elif options.cnts_flagg:
+        update_contacts()
     else:
         run_main()
