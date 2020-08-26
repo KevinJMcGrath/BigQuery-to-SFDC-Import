@@ -58,7 +58,7 @@ def update_contacts(export_results: bool=False, record_count_limit: int=0):
     contacts_for_update = []
     index = 0
     for row in bq_client.results:
-        username = row['username']
+        username = row['username'].lower()
 
         if username in contact_list:
             sfdc_id = contact_list[username]['Id']

@@ -32,7 +32,7 @@ class SFClient:
         logging.info('Downloading Contacts from Salesforce...')
         response = self.client.query_all(soql)
 
-        return {u['Username__c']: u for u in response['records']}
+        return {u['Username__c'].lower(): u for u in response['records']}
 
     def update_contacts(self, contacts_for_update: list):
         group_count, remainder = divmod(len(contacts_for_update), self.batch_size_limit)
