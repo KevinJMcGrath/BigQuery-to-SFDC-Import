@@ -1,5 +1,4 @@
 import logging
-import time
 import sys
 
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -49,7 +48,7 @@ def update_contacts(export_results: bool=False, record_count_limit: int=0):
     # Obtain data from BigQuery
     query_str = f"SELECT * FROM {bq_client.dataset_id}.{bq_client.tables['contact_table_id']} ORDER BY username"
     bq_client.query(query_str)
-    bq_total = bq_client.results.total_rows
+    # bq_total = bq_client.results.total_rows
 
     # Obtain complete Contact list from Salesforce
     contact_list = sfdc_client.get_contacts_by_username()
