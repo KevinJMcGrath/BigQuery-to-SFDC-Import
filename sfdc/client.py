@@ -27,7 +27,7 @@ class SFClient:
         return [o['id'] for o in response['records']]
 
     def get_contacts_by_username(self):
-        soql = 'SELECT Id, Username__c, Apex_Bypass_Toggle__c FROM Contact ORDER BY Username__c ASC'
+        soql = 'SELECT Id, Username__c, Apex_Bypass_Toggle__c FROM Contact WHERE Username__c != NULL ORDER BY Username__c ASC'
 
         logging.info('Downloading Contacts from Salesforce...')
         response = self.client.query_all(soql)

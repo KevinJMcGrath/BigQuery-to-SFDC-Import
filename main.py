@@ -117,7 +117,7 @@ if __name__ == '__main__':
         run_sched()
     elif options.opps_flag:
         update_opps()
-    elif options.cnts_flagg:
+    elif options.cnts_flag:
         update_contacts()
     else:
         run_main()

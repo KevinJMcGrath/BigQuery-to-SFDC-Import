@@ -25,7 +25,6 @@ def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
 
     contact_dict = {
         'Id': contact_id,
-        'Username__c': bq_row['username'],
         'Apex_Bypass_Toggle__c': not bypass_toggle,
         'AS_BQ_Last_Updated__c': datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
 
