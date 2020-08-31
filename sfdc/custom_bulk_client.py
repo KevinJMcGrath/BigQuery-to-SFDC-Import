@@ -3,6 +3,8 @@ import logging
 import requests
 import time
 
+from datetime import datetime, timedelta
+
 import utility
 
 # http://www.wadewegner.com/2014/04/update-records-with-python-and-the-salesforce-bulk-api/
@@ -113,7 +115,10 @@ class SFBulkCustomClient:
         pending_count = 0
         queue_length = len(self.job_queue)
 
-        while pending_count < queue_length:
+        # Only allow the monitor to run for 10 minutes.
+        start_d = datetime.now()
+        run_d = datetime.now()
+        while pending_count < queue_length and run_d < start_d + timedelta(minutes=15):
             for job_id, status in self.job_queue.items():
                 if not status:
                     job_status = self.check_bulk_job_complete(job_id)
@@ -124,5 +129,6 @@ class SFBulkCustomClient:
 
             logging.info(f'{pending_count} of {queue_length} remaining.')
             time.sleep(15)
+            run_d = datetime.now()
 
         logging.info('All jobs complete.')

@@ -27,4 +27,11 @@ heroku container:release worker
 heroku logs
 heroku logs -n 200
 heroku logs --tail
+
+# list apps
+heroku apps
+
+# restart dyno
+heroku dyno:restart -a powerful-tundra-96461
+
  #>
