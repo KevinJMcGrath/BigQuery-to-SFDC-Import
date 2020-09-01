@@ -13,10 +13,16 @@ from sfdc.client import SFClient
 
 package_logger.initialize_logging()
 
-bq_client = BQClient.from_config()
-sfdc_client = SFClient.from_config()
+bq_client: BQClient
+sfdc_client: SFClient
 
 def run_main():
+    global bq_client
+    global sfdc_client
+
+    bq_client = BQClient.from_config()
+    sfdc_client = SFClient.from_config()
+
     update_contacts()
     update_opps()
 
