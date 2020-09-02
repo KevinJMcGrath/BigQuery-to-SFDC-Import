@@ -1,4 +1,4 @@
-#https://devcenter.heroku.com/articles/container-registry-and-runtime
+# https://devcenter.heroku.com/articles/container-registry-and-runtime
 
 # log in to heroku
 heroku login
@@ -34,4 +34,3 @@ heroku apps
 # restart dyno
 heroku dyno:restart -a powerful-tundra-96461
 
- #>

@@ -184,8 +184,9 @@ class SFBulkCustomClient:
             time.sleep(15)
             run_d = datetime.now()
 
-            if run_d < start_d + timedelta(minutes=15):
+            if run_d > start_d + timedelta(minutes=15):
                 logging.error('Monitoring halted due to timeout')
+                break
 
         logging.info('All jobs complete.')
         self.job_queue.clear()
