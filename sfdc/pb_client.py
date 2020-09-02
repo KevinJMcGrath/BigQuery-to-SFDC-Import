@@ -2,9 +2,6 @@ import jsonpickle
 import logging
 import urllib.parse
 
-import config
-
-
 contact_pb_dict = {
     'AS_Premium_News_Content': 2,
     'Auto_Populate_Opportunity_Field_in_Contact_Record': 9,
@@ -53,11 +50,10 @@ class ProcessBuilderManager:
         }
 
         pb_str = jsonpickle.encode(pb, unpicklable=False)
-        response = None
 
         try:
             # The response coming from Salesforce is apparently malformed and fails to parse properly
-            response = self.client.restful(path=f'tooling/sobjects/FlowDefinition/{process_id}/', method='PATCH', data=pb_str)
+            self.client.restful(path=f'tooling/sobjects/FlowDefinition/{process_id}/', method='PATCH', data=pb_str)
         except Exception as ex:
             # The tooling API always returns an error for this for some reason. Ignore it
             if 'Expecting value' not in str(ex):
