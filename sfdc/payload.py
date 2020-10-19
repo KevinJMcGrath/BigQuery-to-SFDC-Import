@@ -16,6 +16,21 @@ def build_opp_payload(bq_row):
 
     return opp_dict
 
+def build_renewal_payload(bq_row):
+    opp_dict = {
+        "Id": bq_row['opp_id'],
+        "Renewal_Health_AS_Sector__c": bq_row['as_sector'],
+        "Renewal_Health_AS_Sector_Rating__c": bq_row['as_sector_rating'],
+        "Renewal_Health_ASV_Bucket__c": bq_row['asv_bucket'],
+        "Renewal_Health_ASV_Bucket_Rating__c": bq_row['asv_bucket_rating'],
+        "Renewal_Health_Month__c": bq_row['month'],
+        "Renewal_Health_Months_Active_Days__c": bq_row['months_active_days_concat'],
+        "Renewal_Health_Months_Active_Days_Rating__c": bq_row['months_active_days_rating'],
+        "Renewal_Health_Months_to_Renewal__c": bq_row['months_to_renewal'],
+        "Renewal_Health_Months_Watchlists__c": bq_row['months_watchlists'],
+        "Renewal_Health_Months_Watchlists_Create__c": bq_row['months_watchlists_created_concat']
+    }
+
 def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
     def parse_datetime(row_dt):
         if row_dt:

@@ -27,6 +27,16 @@ def run_main():
     update_opps()
 
 def update_opps():
+    # Disable Process Builder processes
+    sfdc_client.deactivate_pb_processes(object_name='Opportunity')
+
+    update_opps_health_score()
+
+    update_opps_renewal()
+
+    sfdc_client.activate_pb_processes(object_name='Opportunity')
+
+def update_opps_health_score():
     query_str = f"SELECT * FROM {bq_client.dataset_id}.{bq_client.tables['opp_table_id']}"
     bq_client.query(query_str)
 
@@ -38,14 +48,24 @@ def update_opps():
     for row in bq_client.results:
         opps_for_update.append(payload.build_opp_payload(row))
 
-    # Disable Process Builder processes
-    sfdc_client.deactivate_pb_processes(object_name='Opportunity')
-
     sfdc_client.update_bulk(opps_for_update, object_name='Opportunity')
 
     sfdc_client.monitor_job_queue()
 
-    sfdc_client.activate_pb_processes(object_name='Opportunity')
+    logging.info('done!')
+
+def update_opps_renewal():
+    query_str = f"SELECT * FROM {bq_client.dataset_id}.{bq_client.tables['opp_renewal_table_id']}"
+    bq_client.query(query_str)
+
+    opps_for_update = []
+
+    for row in bq_client.results:
+        opps_for_update.append(payload.build_renewal_payload(row))
+
+    sfdc_client.update_bulk(opps_for_update, object_name='Opportunity')
+
+    sfdc_client.monitor_job_queue()
 
     logging.info('done!')
 
