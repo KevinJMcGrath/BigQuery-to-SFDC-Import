@@ -3,7 +3,7 @@ import logging
 import urllib.parse
 
 contact_pb_dict = {
-    'AS_Premium_News_Content': 2,
+    'AS_Premium_News_Content': 3,
     'Auto_Populate_Opportunity_Field_in_Contact_Record': 9,
     # 'Contact_Owner_equals_AM_when_Inactive_user_is_Activated': 3,
     'Corp_Investor_Relations_PositionId_Update': 2,

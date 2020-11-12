@@ -31,6 +31,8 @@ def build_renewal_payload(bq_row):
         "Renewal_Health_Months_Watchlists_Create__c": bq_row['months_watchlists_created_concat']
     }
 
+    return opp_dict
+
 def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
     def parse_datetime(row_dt):
         if row_dt:

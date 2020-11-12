@@ -32,7 +32,8 @@ def update_opps():
 
     update_opps_health_score()
 
-    update_opps_renewal()
+    # This is whacky bullshit, disabled. 
+    # update_opps_renewal()
 
     sfdc_client.activate_pb_processes(object_name='Opportunity')
 
