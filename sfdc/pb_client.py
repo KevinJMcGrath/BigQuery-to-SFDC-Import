@@ -12,7 +12,7 @@ contact_pb_dict = {
     'Stamp_MQL_Final_DateTime_Contacts': 2,
     'Set_up_trial_config': 9,
     'Transcript_Type_Default': 2,
-    'Turn_of_direct_broker_feed': 2,
+    # 'Turn_of_direct_broker_feed': 2,
     'Turn_on_Moody_s_Credit_Research_Capital_Markets': 2,
     'Turn_on_underlying_MCO_Corporate_Global_AS_fields': 2
 }
