@@ -1,5 +1,27 @@
 from datetime import datetime
 
+def build_wsi_user_detail_update_payload(bq_row, ud_id: str):
+    return {
+        "Id": ud_id,
+        "Credits_Consumed__c": bq_row['running_total_wsi_content_pool_credits_consumed'],
+        "Pages_Consumed__c": bq_row['running_total_wsi_content_pool_page_purchases']
+    }
+
+def build_wsi_user_detail_insert_payload(bq_row, wsi_id: str=None, contact_id: str=None):
+    return  {
+        "Contact__c": contact_id,
+        "WSI_Content_Pool__c": wsi_id,
+        "Credits_Consumed__c": bq_row['running_total_wsi_content_pool_credits_consumed'],
+        "Pages_Consumed__c": bq_row['running_total_wsi_content_pool_page_purchases']
+    }
+
+def build_wsi_user_detail_history_payload(bq_row, wsi_user_detail_id: str=None):
+    return {
+        "WSI_User_Detail__c": wsi_user_detail_id,
+        "Credits_Consumed__c": bq_row['running_total_wsi_content_pool_credits_consumed'],
+        "Pages_Consumed__c": bq_row['running_total_wsi_content_pool_page_purchases']
+    }
+
 def build_opp_payload(bq_row):
     opp_dict = {
         "Id": bq_row['opp_id'],

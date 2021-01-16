@@ -36,7 +36,7 @@ class BQClient:
 
     def export_csv(self):
         filename = f'bq_export_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}.csv'
-        export_path = Path('./export', filename)
+        export_path = Path('../export', filename)
 
         logging.info('Exporting results to CSV...')
 

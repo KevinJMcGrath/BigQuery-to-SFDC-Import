@@ -19,6 +19,11 @@ class SFClient:
     def from_config():
         return SFClient(config.Salesforce.username, config.Salesforce.password, config.Salesforce.security_token)
 
+    def soql_query(self, soql: str):
+        response = self.client.query_all(soql)
+
+        return response['records']
+
     def get_open_opps(self):
         soql = f'SELECT Id FROM Opportunity WHERE IsClosed = False AND >= {datetime.today().year}-01-01'
         logging.info('Downloading Opportunities...')
@@ -46,6 +51,9 @@ class SFClient:
 
             logging.info(f'Sending Contact update rows {start} to {end}')
             self.client.update_contacts(contacts_for_update[start:end])
+
+    def insert_bulk(self, sobject_list: list, object_name):
+        self.bulk_client.send_bulk_insert(sobject_list, object_name)
 
     def update_bulk(self, contacts_for_update: list, object_name):
         self.bulk_client.submit_records(contacts_for_update, sobject=object_name)

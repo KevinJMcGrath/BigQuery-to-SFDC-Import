@@ -23,6 +23,9 @@ class SFBulkCustomClient:
     def submit(self, endpoint, payload, content_type: str='JSON'):
         return requests.post(url=endpoint, headers=self.headers_json, data=payload)
 
+    def get(self, endpoint):
+        return requests.get(url=endpoint, headers=self.headers_json).json()
+
     def create_job_json(self, operation: str, sobject):
         # concurrencyMode is the default, does not need to be specified
         payload = {
@@ -46,6 +49,31 @@ class SFBulkCustomClient:
 
         return response.json()['id']
 
+    def get_job_results(self, job_id: str):
+        retval = {}
+
+        url = f"{self.bulk_url}job/{job_id}/batch"
+        resp = self.get(url)
+
+        for batch in resp['batchInfo']:
+            batch_id = batch['id']
+
+            batch_res_url = f"{self.bulk_url}job/{job_id}/batch/{batch_id}/result"
+
+            batch_res = self.get(batch_res_url)
+
+            retval.update(batch_res)
+
+        return retval
+
+
+    def get_batch_results(self, job_id: str, batch_id: str):
+        url = f"{self.bulk_url}job/{job_id}/batch/{batch_id}/result"
+
+        response = requests.get(url=url, headers=self.headers_json)
+
+        return response.json()
+
     def close_job_json(self, job_id):
         payload = {
             "state": "Closed"
@@ -68,9 +96,15 @@ class SFBulkCustomClient:
         else:
             self.send_bulk_update(records_for_update, sobject=sobject)
 
+    def send_bulk_insert(self, records_for_insert: list, sobject: str='Contact'):
+        return self.send_bulk_operation('insert', records_for_insert, sobject)
+
     def send_bulk_update(self, records_for_update: list, sobject: str='Contact'):
+        return self.send_bulk_operation('update', records_for_update, sobject)
+
+    def send_bulk_operation(self, operation_type: str, records_for_update: list, sobject: str='Contact'):
         # create the batch job
-        job_id = self.create_job_json('update', sobject=sobject)
+        job_id = self.create_job_json(operation_type, sobject=sobject)
 
         job = None
         if job_id not in self.job_queue:
@@ -111,6 +145,8 @@ class SFBulkCustomClient:
         self.job_queue[job_id] = job
         self.close_job_json(job_id)
 
+        return job_id
+
     def update_job_status(self, job_id: str):
         url = f"{self.bulk_url}job/{job_id}/batch"
 
@@ -125,7 +161,7 @@ class SFBulkCustomClient:
         for batch in resp['batchInfo']:
             batch_id = batch['id']
             batch_state = batch['state']
-            batch_status = batch_state == 'Completed' or batch['state'] == 'Failed'
+            batch_status = batch_state == 'Completed' or batch_state == 'Failed'
             batch_records_processed = batch['numberRecordsProcessed']
             batch_records_failed = batch['numberRecordsFailed']
 
@@ -173,7 +209,7 @@ class SFBulkCustomClient:
                 b_c = status['batch_count']
                 b_cp = status['batch_complete_count']
 
-                logging.info(f'Job: {job_count}/{queue_length} - batches: {b_cp}/{b_t} - records: {r_p}/{r_t}({r_f})')
+                logging.info(f'Job: {job_count}/{queue_length} - batches: {b_cp}/{b_t} - records: {r_p}/{r_t} ({r_f})')
 
                 if status['is_complete']:
                     job_completed_count += 1
