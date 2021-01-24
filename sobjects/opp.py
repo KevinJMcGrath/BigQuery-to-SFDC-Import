@@ -23,10 +23,22 @@ def update_opps_health_score():
     # They're giving me the opp Id. I don't really need to match them.
     # opp_ids = sfdc_client.get_open_opps()
 
+    unique_opps = {}
     opps_for_update = []
 
     for row in bq.bq_client.results:
-        opps_for_update.append(payload.build_opp_payload(row))
+        o_id = row['opp_id']
+        row_num = row['row_num']
+
+        if o_id in unique_opps:
+            if row_num > unique_opps[o_id][0]:
+                unique_opps[o_id] = (row_num, payload.build_opp_payload(row))
+        else:
+            unique_opps[o_id] = (row_num, payload.build_opp_payload(row))
+
+    for k, v in unique_opps.items():
+        opp_payload = v[1]
+        opps_for_update.append(opp_payload)
 
     sfdc.sfdc_client.update_bulk(opps_for_update, object_name='Opportunity')
 
