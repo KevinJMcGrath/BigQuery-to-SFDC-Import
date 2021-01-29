@@ -9,7 +9,6 @@ contact_pb_dict = {
     'Corp_Investor_Relations_PositionId_Update': 2,
     'MCO_Financial_Inst_Global_AS_TRUE': 2,
     'MCO_Fundamental_Global_AS_TRUE': 2,
-    'Stamp_MQL_Final_DateTime_Contacts': 2,
     'Set_up_trial_config': 9,
     'Transcript_Type_Default': 2,
     # 'Turn_of_direct_broker_feed': 2,
