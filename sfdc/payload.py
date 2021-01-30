@@ -69,6 +69,7 @@ def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
 
         'AS_Active_Days_7d__c': bq_row['active_days_in_last_7'],
         'AS_Active_Days_28d__c': bq_row['active_days_in_last_28'],
+        'AS_Active_Days_90d__c': bq_row['active_days_in_last_90'],
 
         'AS_Documents_Read__c': bq_row['documents_read_count'],
         'AS_Documents_Read_7d__c': bq_row['documents_read_in_last_7'],
