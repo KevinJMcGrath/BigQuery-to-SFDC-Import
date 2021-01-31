@@ -112,6 +112,11 @@ def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
         'Factset_AMR_Page_Purchase_30d__c': bq_row['factset_amr_page_purchase_in_last_30'],
         'Factset_AMR_Page_Purchase_90d__c': bq_row['factset_amr_page_purchase_in_last_90'],
         'Factset_AMR_Page_Purchase_365d__c': bq_row['factset_amr_page_purchase_in_last_365'],
+        'FactSet_AMR_Pages_Consumed_2d__c': bq_row['factset_amr_pages_consumed_today_yest'],
+        'FactSet_AMR_Pages_Consumed_7d__c': bq_row['factset_amr_page_purchase_in_last_7'],
+        'FactSet_AMR_Pages_Consumed_30d__c': bq_row['factset_amr_page_purchase_in_last_30'],
+        'FactSet_AMR_Pages_Consumed_90d__c': bq_row['factset_amr_page_purchase_in_last_90'],
+        'FactSet_AMR_Pages_Consumed_365d__c': bq_row['factset_amr_page_purchase_in_last_365'],
 
         'Direct_Broker_Pages_Read_2d__c': bq_row['direct_broker_page_read_today_yest'],
         'Direct_Broker_Pages_Read_7d__c': bq_row['direct_broker_page_read_in_last_7'],
@@ -123,6 +128,11 @@ def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
         'Direct_Broker_Page_Purchase_30d__c': bq_row['direct_broker_page_purchase_in_last_30'],
         'Direct_Broker_Page_Purchase_90d__c': bq_row['direct_broker_page_purchase_in_last_90'],
         'Direct_Broker_Page_Purchase_365d__c': bq_row['direct_broker_page_purchase_in_last_365'],
+        'Direct_Broker_Pages_Consumed_2d__c': bq_row['direct_broker_pages_consumed_today_yest'],
+        'Direct_Broker_Pages_Consumed_7d__c': bq_row['direct_broker_pages_consumed_in_last_7'],
+        'Direct_Broker_Pages_Consumed_30d__c': bq_row['direct_broker_pages_consumed_in_last_30'],
+        'Direct_Broker_Pages_Consumed_90d__c': bq_row['direct_broker_pages_consumed_in_last_90'],
+        'Direct_Broker_Pages_Consumed_365d__c': bq_row['direct_broker_pages_consumed_in_last_365'],
 
         'AS_Total_iPhone_Sessions__c': bq_row['total_iphone_sessions'],
         'AS_iPhone_App_Sessions_7d__c': bq_row['iphone_app_sessions_in_last_7'],
