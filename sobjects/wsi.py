@@ -37,10 +37,12 @@ def get_wsi_user_details(active: bool = True):
     wsi_user_detail_records = sfdc.sfdc_client.soql_query(soql)
 
     for user_detail in wsi_user_detail_records:
-        if 'Contact_Username__c' in user_detail:
-            username = user_detail['Contact_Username__c'].lower()
+        if user_detail and 'Contact_Username__c' in user_detail:
+            # username = user_detail['Contact_Username__c'].lower()
+            username = user_detail.get('Contact_Username__c')
 
-            wsi_user_details[username] = user_detail
+            if username:
+                wsi_user_details[username.lower()] = user_detail
 
     return wsi_user_details
 
