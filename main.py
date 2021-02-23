@@ -33,7 +33,8 @@ def update_contacts(export_results: bool=False, record_count_limit: int=0):
 
 def run_sched():
     scheduler = BlockingScheduler()
-    scheduler.add_job(run_main, 'cron', hour=1)
+    # scheduler.add_job(run_main, 'cron', hour=1, max_instances=1, misfire_grace_time=None)
+    scheduler.add_job(run_main, 'cron', hour=7) #
 
     try:
         scheduler.start()

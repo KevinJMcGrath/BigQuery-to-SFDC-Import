@@ -146,7 +146,7 @@ def update_wsi_consumption():
 
     if len(wsi_user_details_insert) > 0:
         logging.info('Inserting new WSI User Detail records...')
-        job_id = sfdc.sfdc_client.insert_bulk(wsi_user_details_insert, 'WSI_User_Detail__c')
+        sfdc.sfdc_client.insert_bulk(wsi_user_details_insert, 'WSI_User_Detail__c')
 
         sfdc.sfdc_client.monitor_job_queue()
 
