@@ -139,13 +139,20 @@ def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
         'AS_iPhone_App_Sessions_28d__c': bq_row['iphone_app_sessions_in_last_28']
     }
 
+    today_str = parse_datetime(datetime.today())
     dt_str = parse_datetime(bq_row['last_login_timestamp'])
     la_dt_str = parse_datetime(bq_row['last_activity_timestamp'])
 
-    if dt_str:
-        contact_dict['Last_Login__c'] = dt_str
-
     if la_dt_str:
         contact_dict['AS_Last_Activity__c'] = la_dt_str
+    else:
+        contact_dict['AS_Last_Activity__c'] = today_str
+
+    if dt_str:
+        contact_dict['Last_Login__c'] = dt_str
+    else:
+        contact_dict['Last_Login__c'] = la_dt_str
+
+
 
     return contact_dict
