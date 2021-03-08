@@ -60,7 +60,7 @@ def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
         if row_dt:
             return row_dt.strftime("%Y-%m-%d")
         else:
-            return ''
+            return None
 
     contact_dict = {
         'Id': contact_id,
@@ -72,8 +72,8 @@ def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
         'AS_Active_Days_90d__c': bq_row['active_days_in_last_90'],
 
         'AS_Documents_Read__c': bq_row['documents_read_count'],
-        'AS_Documents_Read_7d__c': bq_row['documents_read_in_last_7'],
-        'AS_Documents_Read_28d__c': bq_row['documents_read_in_last_28'],
+        'AS_Documents_Read_7d__c': bq_row.get('documents_read_in_last_7', 0),
+        'AS_Documents_Read_28d__c': bq_row.get('documents_read_in_last_28', 0),
 
         'AS_Watchlists_Created__c': bq_row['watchlists_created_count'],
         'AS_Watchlists_Deleted__c': bq_row['watchlists_deleted_count'],
@@ -140,17 +140,18 @@ def build_contact_payload(contact_id: str, bypass_toggle: bool, bq_row):
     }
 
     today_str = parse_datetime(datetime.today())
+    now_str = datetime.now().isoformat().split('.')[0] + 'Z'
     dt_str = parse_datetime(bq_row['last_login_timestamp'])
     la_dt_str = parse_datetime(bq_row['last_activity_timestamp'])
 
     if la_dt_str:
         contact_dict['AS_Last_Activity__c'] = la_dt_str
-    else:
-        contact_dict['AS_Last_Activity__c'] = today_str
+    # else:
+    #     contact_dict['AS_Last_Activity__c'] = now_str
 
     if dt_str:
         contact_dict['Last_Login__c'] = dt_str
-    else:
+    elif la_dt_str:
         contact_dict['Last_Login__c'] = la_dt_str
 
 
