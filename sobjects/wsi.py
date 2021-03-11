@@ -83,6 +83,9 @@ def build_histories_new_records():
             "Pages_Consumed__c": pages
         }
 
+        if not cred and not pages:
+            continue
+
         histories.append(hist)
 
     return histories
@@ -111,7 +114,9 @@ def update_wsi_consumption():
             wsi_user_details_update.append(p)
 
             p_h = payload.build_wsi_user_detail_history_payload(row, ud['Id'])
-            wsi_user_history_insert.append(p_h)
+
+            if p_h:
+                wsi_user_history_insert.append(p_h)
 
         elif bq_uname in wsi_contacts:
             c = wsi_contacts.get(bq_uname)

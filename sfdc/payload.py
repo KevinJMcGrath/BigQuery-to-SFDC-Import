@@ -16,10 +16,16 @@ def build_wsi_user_detail_insert_payload(bq_row, wsi_id: str=None, contact_id: s
     }
 
 def build_wsi_user_detail_history_payload(bq_row, wsi_user_detail_id: str=None):
+    cred = bq_row['running_total_wsi_content_pool_credits_consumed']
+    pages = bq_row['running_total_wsi_content_pool_page_purchases']
+
+    if not cred and not pages:
+        return None
+
     return {
         "WSI_User_Detail__c": wsi_user_detail_id,
-        "Credits_Consumed__c": bq_row['running_total_wsi_content_pool_credits_consumed'],
-        "Pages_Consumed__c": bq_row['running_total_wsi_content_pool_page_purchases']
+        "Credits_Consumed__c": cred,
+        "Pages_Consumed__c": pages
     }
 
 def build_opp_payload(bq_row):
