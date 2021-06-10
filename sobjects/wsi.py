@@ -1,5 +1,7 @@
 import logging
 
+from datetime import date
+
 import bq
 import sfdc
 from sfdc import payload
@@ -51,7 +53,7 @@ def get_wsi_user_details_with_last_history(active: bool = True):
 
     soql = 'SELECT Id, Contact__c, Contact_Username__c, Credits_Consumed__c,'
     soql += ' Pages_Consumed__c, WSI_Content_Pool__c,'
-    soql += ' (SELECT Id, Credits_Consumed__c, Pages_Consumed__c'
+    soql += ' (SELECT Id, Credits_Consumed__c, Pages_Consumed__c, CreatedDate '
     soql += ' FROM WSI_User_Detail_Histories__r ORDER BY CreatedDate DESC LIMIT 1)'
     soql += ' FROM WSI_User_Detail__c'
 
@@ -200,6 +202,10 @@ def update_wsi_consumption():
         sfdc.sfdc_client.monitor_job_queue()
 
 def is_dupe_history_record(prior_history_record, new_history_record):
+    # Always allow entries if today is the first of the month
+    if date.today().day == 1:
+        return False
+
     # Credits_Consumed__c, Pages_Consumed__c
     return prior_history_record and \
            (prior_history_record['Credits_Consumed__c'] == new_history_record['Credits_Consumed__c']) and \
