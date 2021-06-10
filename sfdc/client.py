@@ -10,7 +10,9 @@ from sfdc.pb_client import ProcessBuilderManager
 
 class SFClient:
     def __init__(self, username: str, password: str, sec_token: str):
-        self.client = Salesforce(username=username, password=password, security_token=sec_token)
+        # Need to add domain="test" for sandbox connection
+        # self.client = Salesforce(username=username, password=password, security_token=sec_token, domain="test")
+        self.client = Salesforce(username=username, password=password, security_token=sec_token, domain="login")
         self.bulk_client = SFBulkCustomClient(self.client.bulk_url, self.client.session_id)
         self.pb_client = ProcessBuilderManager(self.client)
         self.batch_size_limit = 2000

@@ -46,6 +46,31 @@ def get_wsi_user_details(active: bool = True):
 
     return wsi_user_details
 
+def get_wsi_user_details_with_last_history(active: bool = True):
+    wsi_user_details = {}
+
+    soql = 'SELECT Id, Contact__c, Contact_Username__c, Credits_Consumed__c,'
+    soql += ' Pages_Consumed__c, WSI_Content_Pool__c,'
+    soql += ' (SELECT Id, Credits_Consumed__c, Pages_Consumed__c'
+    soql += ' FROM WSI_User_Detail_Histories__r ORDER BY CreatedDate DESC LIMIT 1)'
+    soql += ' FROM WSI_User_Detail__c'
+
+    if active:
+        soql += ' WHERE WSI_Content_Pool__r.Active__c = True'
+
+    logging.info('Downloading WSI Pool User Details from Salesforce...')
+    wsi_user_detail_records = sfdc.sfdc_client.soql_query(soql)
+
+    for user_detail in wsi_user_detail_records:
+        if user_detail and 'Contact_Username__c' in user_detail:
+            # username = user_detail['Contact_Username__c'].lower()
+            username = user_detail.get('Contact_Username__c')
+
+            if username:
+                wsi_user_details[username.lower()] = user_detail
+
+    return wsi_user_details
+
 def get_contacts_by_wsi_pool():
     contact_map = {}
 
@@ -99,7 +124,8 @@ def update_wsi_consumption():
     wsi_user_details_update = []
     wsi_user_history_insert = []
 
-    user_details = get_wsi_user_details()
+    # user_details = get_wsi_user_details()
+    user_details = get_wsi_user_details_with_last_history()
     wsi_contacts = get_contacts_by_wsi_pool()
 
     for row in bq.bq_client.results:
@@ -108,7 +134,13 @@ def update_wsi_consumption():
         uname_orig = row['username']
 
         if bq_uname in user_details:
+            # Match bq_record to existing WSI User Detail
             ud = user_details.get(bq_uname)
+
+            # Query for existing history records to keep from inserting duplicates
+            history_record = None
+            if ud['WSI_User_Detail_Histories__r'] and len(ud['WSI_User_Detail_Histories__r']['records']) > 0:
+                history_record = ud['WSI_User_Detail_Histories__r']['records'][0]
 
             p = payload.build_wsi_user_detail_update_payload(row, ud['Id'])
             wsi_user_details_update.append(p)
@@ -116,7 +148,11 @@ def update_wsi_consumption():
             p_h = payload.build_wsi_user_detail_history_payload(row, ud['Id'])
 
             if p_h:
-                wsi_user_history_insert.append(p_h)
+                if not is_dupe_history_record(history_record, p_h):
+                    wsi_user_history_insert.append(p_h)
+                else:
+                    # Pages_Consumed__c, Credits_Consumed__c
+                    logging.info(f'Dupe History Found. Credits Prior: {history_record["Credits_Consumed__c"]} - Credits New: {p_h["Credits_Consumed__c"]}')
 
         elif bq_uname in wsi_contacts:
             c = wsi_contacts.get(bq_uname)
@@ -163,4 +199,8 @@ def update_wsi_consumption():
 
         sfdc.sfdc_client.monitor_job_queue()
 
-
+def is_dupe_history_record(prior_history_record, new_history_record):
+    # Credits_Consumed__c, Pages_Consumed__c
+    return prior_history_record and \
+           (prior_history_record['Credits_Consumed__c'] == new_history_record['Credits_Consumed__c']) and \
+           (prior_history_record['Pages_Consumed__c'] == new_history_record['Pages_Consumed__c'])

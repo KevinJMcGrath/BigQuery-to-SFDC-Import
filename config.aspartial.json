@@ -1,0 +1,33 @@
+{
+  "log_verbose": false,
+  "google": {
+    "sa_creds_path": "./creds/bigquery-service-account.json",
+    "project_id": "bia-prod-268616",
+    "dataset_id": "salesforce_api",
+    "tables": {
+      "contact_table_id": "df_revops_user_activity_summary",
+      "opp_table_id": "df_pipeline_health_score",
+      "opp_renewal_table_id": "df_renewal_health_score",
+      "wsi_consumption_table_id": "df_revops_content_pool_consumption"
+    }
+  },
+  "salesforce":
+  {
+    "username": "kevinmcgr+alphasense@gmail.com.aspartial",
+    "password": "8&K4VK^bQ&@x",
+    "security_token": "c3qGnA9Ho1zCU1k7EKTA4gzG",
+    "pb_collection": [
+      { "name": "AS_Premium_News_Content", "version": 2 },
+      { "name": "Auto_Populate_Opportunity_Field_in_Contact_Record", "version": 9 },
+      { "name": "Auto_Populate_Renewal_Opportunity_Field_in_Contact_Record", "version":  4},
+      { "name": "Corp_Investor_Relations_PositionId_Update", "version": 2 },
+      { "name": "MCO_Financial_Inst_Global_AS_TRUE", "version": 2 },
+      { "name": "MCO_Fundamental_Global_AS_TRUE", "version": 2 },
+      { "name": "Set_up_trial_config", "version": 9 },
+      { "name": "Turn_of_direct_broker_feed", "version": 2 },
+      { "name": "Turn_on_Moody_s_Credit_Research_Capital_Markets", "version": 2 },
+      { "name": "Turn_on_underlying_MCO_Corporate_Global_AS_fields", "version": 2 }
+    ]
+  }
+}
+

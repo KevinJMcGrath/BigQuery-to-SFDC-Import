@@ -43,3 +43,5 @@ heroku apps
 # restart dyno
 heroku dyno:restart -a powerful-tundra-96461
 
+# stop dyno
+heroku dyno:stop -a powerful-tundra-96461

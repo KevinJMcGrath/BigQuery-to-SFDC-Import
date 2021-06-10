@@ -5,6 +5,7 @@ export
 # Secrets
 creds/
 config.json
+config.*.json
 
 # Data folder
 export/
