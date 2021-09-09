@@ -203,8 +203,9 @@ def update_wsi_consumption():
 
 def is_dupe_history_record(prior_history_record, new_history_record):
     # Always allow entries if today is the first of the month
-    if date.today().day == 1:
-        return False
+    # KJM 09/09/2021 -- This probably seemed like a good idea at the time, but I'm disabling it
+    # if date.today().day == 1:
+        # return False
 
     # Credits_Consumed__c, Pages_Consumed__c
     return prior_history_record and \
