@@ -11,7 +11,7 @@ contact_pb_dict = {
     'MCO_Fundamental_Global_AS_TRUE': 2,
     # 'Set_up_trial_config': 9,
     # 'Transcript_Type_Default': 2,  # Disabled per https://alphasense.jira.com/browse/SI-115
-    'Turn_on_Moody_s_Credit_Research_Capital_Markets': 2
+    'Turn_on_Moody_s_Credit_Research_Capital_Markets': 3
     # 'Turn_on_underlying_MCO_Corporate_Global_AS_fields': 2
 }
 
