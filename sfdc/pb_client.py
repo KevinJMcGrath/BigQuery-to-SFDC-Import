@@ -3,16 +3,16 @@ import logging
 import urllib.parse
 
 contact_pb_dict = {
-    'AS_Premium_News_Content': 4,
+    # 'AS_Premium_News_Content': 4,
     # 'Auto_Populate_Opportunity_Field_in_Contact_Record': 9,
     # 'Auto_Populate_Renewal_Opportunity_Field_in_Contact_Record': 4,
-    'Corp_Investor_Relations_PositionId_Update': 2,
+    # 'Corp_Investor_Relations_PositionId_Update': 2,
     'MCO_Financial_Inst_Global_AS_TRUE': 2,
     'MCO_Fundamental_Global_AS_TRUE': 2,
-    'Set_up_trial_config': 9,
+    # 'Set_up_trial_config': 9,
     # 'Transcript_Type_Default': 2,  # Disabled per https://alphasense.jira.com/browse/SI-115
-    'Turn_on_Moody_s_Credit_Research_Capital_Markets': 2,
-    'Turn_on_underlying_MCO_Corporate_Global_AS_fields': 2
+    'Turn_on_Moody_s_Credit_Research_Capital_Markets': 2
+    # 'Turn_on_underlying_MCO_Corporate_Global_AS_fields': 2
 }
 
 opp_pb_dict = {
