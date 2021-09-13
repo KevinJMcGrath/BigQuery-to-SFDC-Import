@@ -9,11 +9,13 @@ from sfdc import payload
 from sobjects import pb
 
 def update_contacts(export_results: bool=False, record_count_limit: int=0):
-    pb.disable_process_builder(object_name='Contact')
+    # 2021-09-13 KJM I have disabled all Process Builders and replaced them with Flows
+    # This code is no longer required.
+    # pb.disable_process_builder(object_name='Contact')
 
     update_contact_records(export_results, record_count_limit)
 
-    pb.enable_process_builder(object_name='Contact')
+    # pb.enable_process_builder(object_name='Contact')
 
 
 def update_contact_records(export_results: bool=False, record_count_limit: int=0):
