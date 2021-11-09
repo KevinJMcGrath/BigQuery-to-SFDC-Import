@@ -138,6 +138,7 @@ def update_wsi_consumption():
         if bq_uname in user_details:
             # Match bq_record to existing WSI User Detail
             ud = user_details.get(bq_uname)
+            ud_pool_id = ud['WSI_Content_Pool__c']
 
             # Query for existing history records to keep from inserting duplicates
             history_record = None
@@ -150,8 +151,13 @@ def update_wsi_consumption():
             p_h = payload.build_wsi_user_detail_history_payload(row, ud['Id'])
 
             if p_h:
-                if not is_dupe_history_record(history_record, p_h):
+                # 2021-11-08 - KJM - only add a WSI user history record if content_pool_id
+                # from BQ matches the UserDetail Pool Id. Hopefully this prevents duplicates
+                # going forward
+                if not is_dupe_history_record(history_record, p_h) and bq_pool_id == ud_pool_id:
                     wsi_user_history_insert.append(p_h)
+                elif bq_pool_id != ud_pool_id:
+                    logging.warning(f'Mismatched Pool Id found | BQ content_pool_id: {bq_pool_id} | User Detail WSI_Content_Pool__c: {ud_pool_id}')
                 else:
                     # Pages_Consumed__c, Credits_Consumed__c
                     logging.info(f'Dupe History Found. Credits Prior: {history_record["Credits_Consumed__c"]} - Credits New: {p_h["Credits_Consumed__c"]}')
