@@ -16,11 +16,11 @@ contact_pb_dict = {
 }
 
 opp_pb_dict = {
-    'Assign_primary_contact': 3,
-    'Opp_Stage_Date_Stamps': 3,
-    'Update_Opportunity_Intacct_Entity': 1,
+    #'Assign_primary_contact': 3,
+    #'Opp_Stage_Date_Stamps': 3,
+    #'Update_Opportunity_Intacct_Entity': 1,
     'Deal_Source': 6,
-    'Opportunity_Account_Manager_for_Won_Upsell_Opps': 4
+    #'Opportunity_Account_Manager_for_Won_Upsell_Opps': 4
 
 }
 

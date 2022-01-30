@@ -25,27 +25,27 @@ def get_contact_by_username(username: str):
     else:
         return None
 
-def get_wsi_user_details(active: bool = True):
-    wsi_user_details = {}
-
-    soql = 'SELECT Id, Contact__c, Contact_Username__c, Credits_Consumed__c, '
-    soql += 'Active_On_Pool__c, Pages_Consumed__c, WSI_Content_Pool__c '
-    soql += ' FROM WSI_User_Detail__c WHERE Active_On_Pool__c = true'
-
-    if active:
-        soql += ' AND WSI_Content_Pool__r.Active__c = True'
-
-    logging.info('Downloading WSI Pool User Details from Salesforce...')
-    wsi_user_detail_records = sfdc.sfdc_client.soql_query(soql)
-
-    for user_detail in wsi_user_detail_records:
-        if user_detail and 'Contact_Username__c' in user_detail:
-            username = user_detail.get('Contact_Username__c')
-
-            if username:
-                wsi_user_details[username.lower()] = user_detail
-
-    return wsi_user_details
+# def get_wsi_user_details(active: bool = True):
+#     wsi_user_details = {}
+#
+#     soql = 'SELECT Id, Contact__c, Contact_Username__c, Credits_Consumed__c, '
+#     soql += 'Active_On_Pool__c, Pages_Consumed__c, WSI_Content_Pool__c '
+#     soql += ' FROM WSI_User_Detail__c'
+#
+#     if active:
+#         soql += ' WHERE WSI_Content_Pool__r.Active__c = True'
+#
+#     logging.info('Downloading WSI Pool User Details from Salesforce...')
+#     wsi_user_detail_records = sfdc.sfdc_client.soql_query(soql)
+#
+#     for user_detail in wsi_user_detail_records:
+#         if user_detail and 'Contact_Username__c' in user_detail:
+#             username = user_detail.get('Contact_Username__c')
+#
+#             if username:
+#                 wsi_user_details[username.lower()] = user_detail
+#
+#     return wsi_user_details
 
 def get_wsi_user_details_with_last_history(active: bool = True):
     wsi_user_details = {}
@@ -54,10 +54,10 @@ def get_wsi_user_details_with_last_history(active: bool = True):
     soql += ' Active_On_Pool__c, Pages_Consumed__c, WSI_Content_Pool__c,'
     soql += ' (SELECT Id, Credits_Consumed__c, Pages_Consumed__c, CreatedDate '
     soql += ' FROM WSI_User_Detail_Histories__r ORDER BY CreatedDate DESC LIMIT 1)'
-    soql += ' FROM WSI_User_Detail__c WHERE Active_On_Pool__c = true '
+    soql += ' FROM WSI_User_Detail__c'
 
     if active:
-        soql += ' AND WSI_Content_Pool__r.Active__c = True'
+        soql += ' WHERE WSI_Content_Pool__r.Active__c = True'
 
     logging.info('Downloading WSI Pool User Details from Salesforce...')
     wsi_user_detail_records = sfdc.sfdc_client.soql_query(soql)
@@ -138,6 +138,10 @@ def update_wsi_consumption():
             # Match bq_record to existing WSI User Detail
             ud = user_details.get(bq_uname)
             ud_pool_id = ud['WSI_Content_Pool__c']
+
+            # If we find a user detail record, but the record is inactive, skip the record
+            if not ud['Active_On_Pool__c']:
+                continue
 
             # Query for existing history records to keep from inserting duplicates
             history_record = None
