@@ -12,7 +12,7 @@ class SFBulkCustomClient:
     def __init__(self, sfdc_bulk_url: str, session_id: str):
         self.bulk_url = sfdc_bulk_url
         self.session_id = session_id
-        self.api_version = '50.0'
+        self.api_version = '53.0'
         self.batch_record_limit = 4000
 
         self.headers_xml = {"X-SFDC-Session": self.session_id, "Content-Type": "application/xml; charset=UTF-8"}

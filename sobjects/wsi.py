@@ -58,7 +58,8 @@ def get_wsi_user_details_with_last_history(active: bool = True):
 
     if active:
         soql += ' WHERE WSI_Content_Pool__r.Active__c = True'
-
+    else:
+        soql += ' WHERE WSI_Content_Pool__r.Active__c = False'
     logging.info('Downloading WSI Pool User Details from Salesforce...')
     wsi_user_detail_records = sfdc.sfdc_client.soql_query(soql)
 
@@ -126,7 +127,8 @@ def update_wsi_consumption():
     wsi_user_history_insert = []
 
     # user_details = get_wsi_user_details()
-    user_details = get_wsi_user_details_with_last_history()
+    user_details_activePools = get_wsi_user_details_with_last_history(True)
+    user_details_inactivePools = get_wsi_user_details_with_last_history(False)
     wsi_contacts = get_contacts_by_wsi_pool()
 
     for row in bq.bq_client.results:
@@ -134,13 +136,21 @@ def update_wsi_consumption():
         bq_uname = row['username'].lower()
         uname_orig = row['username']
 
-        if bq_uname in user_details:
+        updateExistingUserDetail = False
+        ud = None
+        if bq_uname in user_details_activePools:
+            ud = user_details_activePools.get(bq_uname)
+            updateExistingUserDetail = True
+        elif bq_uname in user_details_inactivePools:
+            ud = user_details_inactivePools.get(bq_uname)
+            updateExistingUserDetail = True
+
+        if updateExistingUserDetail:
             # Match bq_record to existing WSI User Detail
-            ud = user_details.get(bq_uname)
             ud_pool_id = ud['WSI_Content_Pool__c']
 
-            # If we find a user detail record, but the record is inactive, skip the record
-            if not ud['Active_On_Pool__c']:
+            # If we find a user detail record, but the record is inactive and the consumption has not changed, skip the record
+            if (not ud['Active_On_Pool__c']) and (ud['Credits_Consumed__c'] == row['running_total_wsi_content_pool_credits_consumed']):
                 continue
 
             # Query for existing history records to keep from inserting duplicates
